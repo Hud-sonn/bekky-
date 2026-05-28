@@ -1,0 +1,159 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --void-indigo: #03045E;
+    --twilight-blue: #0077B6;
+    --cyan-glow: #00B4D8;
+    --teal-bright: #90E0EF;
+    --ice-mist: #CAF0F8;
+    --gold-sun: #FFD60A;
+    --dusk-pink: #FF70A6;
+
+    --background: 233 95% 18%;
+    --foreground: 195 100% 90%;
+    --card: 233 95% 12%;
+    --card-foreground: 195 100% 90%;
+    --popover: 233 95% 12%;
+    --popover-foreground: 195 100% 90%;
+    --primary: 195 100% 42%;
+    --primary-foreground: 233 95% 18%;
+    --secondary: 203 100% 36%;
+    --secondary-foreground: 195 100% 90%;
+    --muted: 233 60% 25%;
+    --muted-foreground: 195 60% 70%;
+    --accent: 195 100% 42%;
+    --accent-foreground: 233 95% 18%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 195 40% 30%;
+    --input: 233 60% 20%;
+    --ring: 195 100% 42%;
+    --radius: 0.5rem;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--void-indigo);
+    color: var(--ice-mist);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  ::selection {
+    background: rgba(0, 180, 216, 0.3);
+    color: #CAF0F8;
+  }
+}
+
+@layer components {
+  .font-display {
+    font-family: 'Playfair Display', serif;
+  }
+
+  .font-mono-data {
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .liquid-glass {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+  }
+
+  .liquid-glass-light {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    background: rgba(255, 255, 255, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.65);
+  }
+
+  .liquid-glass-dark {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    background: rgba(3, 4, 94, 0.45);
+    border: 1px solid rgba(144, 224, 239, 0.2);
+  }
+
+  .liquid-glass-green {
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    background: rgba(34, 197, 94, 0.2);
+    border: 1px solid rgba(34, 197, 94, 0.45);
+  }
+
+  .liquid-glass-morphic {
+    backdrop-filter: blur(24px) saturate(1.2);
+    -webkit-backdrop-filter: blur(24px) saturate(1.2);
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  }
+
+  .glass-card {
+    @apply liquid-glass-dark;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    background: rgba(3, 4, 94, 0.6);
+  }
+
+  .glass-card-strong {
+    @apply liquid-glass-dark;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    background: rgba(3, 4, 94, 0.75);
+    border: 1px solid rgba(144, 224, 239, 0.25);
+  }
+
+  .glow-text {
+    text-shadow: 0 0 20px rgba(202, 240, 248, 0.4);
+  }
+
+  .glow-cyan {
+    text-shadow: 0 0 15px rgba(0, 180, 216, 0.6);
+  }
+
+  .btn-glow {
+    border: 1px solid #00B4D8;
+    color: #CAF0F8;
+    background: transparent;
+    transition: all 0.3s ease;
+  }
+
+  .btn-glow:hover {
+    background: #00B4D8;
+    color: #03045E;
+    box-shadow: 0 0 25px rgba(0, 180, 216, 0.5), 0 0 50px rgba(0, 180, 216, 0.2);
+  }
+
+  .text-gradient {
+    background: linear-gradient(135deg, #CAF0F8 0%, #90E0EF 50%, #00B4D8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}
+
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
