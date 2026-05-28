@@ -11,27 +11,6 @@
     --ice-mist: #CAF0F8;
     --gold-sun: #FFD60A;
     --dusk-pink: #FF70A6;
-
-    --background: 233 95% 18%;
-    --foreground: 195 100% 90%;
-    --card: 233 95% 12%;
-    --card-foreground: 195 100% 90%;
-    --popover: 233 95% 12%;
-    --popover-foreground: 195 100% 90%;
-    --primary: 195 100% 42%;
-    --primary-foreground: 233 95% 18%;
-    --secondary: 203 100% 36%;
-    --secondary-foreground: 195 100% 90%;
-    --muted: 233 60% 25%;
-    --muted-foreground: 195 60% 70%;
-    --accent: 195 100% 42%;
-    --accent-foreground: 233 95% 18%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 195 40% 30%;
-    --input: 233 60% 20%;
-    --ring: 195 100% 42%;
-    --radius: 0.5rem;
   }
 
   html {
@@ -48,7 +27,7 @@
   }
 
   * {
-    @apply border-border;
+    @apply border-white/10;
   }
 
   ::selection {
@@ -102,6 +81,7 @@
     box-shadow:
       0 8px 32px rgba(0, 0, 0, 0.12),
       inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    will-change: backdrop-filter;
   }
 
   .glass-card {

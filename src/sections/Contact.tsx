@@ -2,8 +2,6 @@ import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
-gsap.registerPlugin(ScrollTrigger)
-
 const inputClass =
   'w-full px-4 py-3 rounded-xl liquid-glass-morphic text-white placeholder-white/50 border border-white/25 focus:border-white/50 focus:outline-none focus:ring-2 focus:ring-white/20 transition-all'
 
@@ -21,6 +19,23 @@ export default function Contact() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
+      // Radial clip-path reveal from center
+      gsap.fromTo(
+        sectionRef.current,
+        { clipPath: 'circle(0% at 50% 50%)' },
+        {
+          clipPath: 'circle(100% at 50% 50%)',
+          duration: 1.4,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 85%',
+            end: 'top 30%',
+            scrub: 1,
+          },
+        }
+      )
+
       gsap.fromTo(
         contentRef.current,
         { opacity: 0, y: 60 },
@@ -93,7 +108,7 @@ export default function Contact() {
     <section
       id="contact"
       ref={sectionRef}
-      className="relative w-full min-h-screen py-24 md:py-32 overflow-hidden rounded-t-[3rem] md:rounded-t-[4rem] -mt-8 z-10"
+      className="relative w-full min-h-screen py-24 md:py-32 overflow-hidden -mt-8 z-10"
     >
       <div
         className="absolute inset-0 w-full h-full"

@@ -2,8 +2,6 @@ import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
-gsap.registerPlugin(ScrollTrigger)
-
 export default function About() {
   const sectionRef = useRef<HTMLElement>(null)
   const imageRef = useRef<HTMLDivElement>(null)
@@ -12,6 +10,23 @@ export default function About() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
+      // Diagonal clip-path reveal from top-left
+      gsap.fromTo(
+        sectionRef.current,
+        { clipPath: 'polygon(0 0, 0 0, 0 100%, 0 100%)' },
+        {
+          clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)',
+          duration: 1.2,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 85%',
+            end: 'top 30%',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      )
+
       gsap.to(imageRef.current, {
         yPercent: -15,
         ease: 'none',
@@ -81,7 +96,7 @@ export default function About() {
     <section
       id="about"
       ref={sectionRef}
-      className="relative min-h-screen w-full overflow-hidden py-24 md:py-32 rounded-t-[3rem] md:rounded-t-[4rem] -mt-8 z-10"
+      className="relative min-h-screen w-full overflow-hidden py-24 md:py-32 -mt-8 z-10"
     >
       <div
         ref={imageRef}

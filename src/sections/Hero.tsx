@@ -2,8 +2,6 @@ import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
-gsap.registerPlugin(ScrollTrigger)
-
 interface HeroProps {
   scrollTo: (target: string) => void
 }
@@ -18,24 +16,24 @@ export default function Hero({ scrollTo }: HeroProps) {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ delay: 0.5 })
+      const tl = gsap.timeline({ delay: 0.15 })
 
       tl.fromTo(
         badgeRef.current,
         { opacity: 0, y: 30, scale: 0.9 },
-        { opacity: 1, y: 0, scale: 1, duration: 0.8, ease: 'power3.out' }
+        { opacity: 1, y: 0, scale: 1, duration: 1, ease: 'power3.out' }
       )
       tl.fromTo(
         subtitleRef.current,
         { opacity: 0, y: 40 },
-        { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' },
-        '-=0.4'
+        { opacity: 1, y: 0, duration: 1, ease: 'power3.out' },
+        '-=0.5'
       )
       tl.fromTo(
         ctaRef.current,
         { opacity: 0, y: 30 },
-        { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' },
-        '-=0.4'
+        { opacity: 1, y: 0, duration: 1, ease: 'power3.out' },
+        '-=0.5'
       )
 
       gsap.to(bgRef.current, {
@@ -75,8 +73,18 @@ export default function Hero({ scrollTo }: HeroProps) {
         ref={bgRef}
         src="/images/hero-bg.jpg"
         alt=""
+        loading="lazy"
         className="absolute inset-0 w-full h-full object-cover object-[center_30%]"
         style={{ willChange: 'transform' }}
+      />
+
+      {/* Subtle dark vignette for readability — neutral black, no blue */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            'radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.55) 100%)',
+        }}
       />
 
       <div

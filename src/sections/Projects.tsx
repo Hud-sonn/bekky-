@@ -2,8 +2,6 @@ import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
-gsap.registerPlugin(ScrollTrigger)
-
 const topProjects = [
   {
     id: 1,
@@ -90,6 +88,7 @@ function ProjectCard({
           <img
             src={project.image}
             alt={project.name}
+            loading="lazy"
             className="w-full h-full object-cover object-center transition-transform duration-700"
             style={{
               transform: hoveredId === project.id ? 'scale(1.05)' : 'scale(1)',
@@ -159,6 +158,24 @@ export default function Projects() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
+      // Scale/fade reveal from 0.97
+      gsap.fromTo(
+        sectionRef.current,
+        { opacity: 0.85, scale: 0.97 },
+        {
+          opacity: 1,
+          scale: 1,
+          duration: 1.2,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 85%',
+            end: 'top 30%',
+            scrub: 1,
+          },
+        }
+      )
+
       gsap.fromTo(
         titleRef.current,
         { opacity: 0, y: 50 },
@@ -233,7 +250,7 @@ export default function Projects() {
     <section
       id="projects"
       ref={sectionRef}
-      className="relative w-full overflow-hidden will-change-transform rounded-t-[3rem] md:rounded-t-[4rem] -mt-8 z-10"
+      className="relative w-full overflow-hidden will-change-transform -mt-8 z-10"
     >
       {/* Top zone: Nezuko background */}
       <div className="relative py-20 md:py-24">

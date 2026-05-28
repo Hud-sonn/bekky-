@@ -46,36 +46,36 @@ export default function Intro({ onComplete }: IntroProps) {
     const playExitAnimation = () => {
       const tl = gsap.timeline()
 
-      // Flash white
+      // Soft light flash (not pure white)
       tl.to(containerRef.current, {
-        backgroundColor: '#ffffff',
-        duration: 0.15,
-        ease: 'power2.in',
-      })
-
-      // Slash effect - diagonal wipe
-      tl.to(slashRef.current, {
-        clipPath: 'polygon(-10% -10%, 110% -10%, 110% 110%, -10% 110%)',
-        duration: 0.4,
-        ease: 'power3.inOut',
-      }, '-=0.05')
-
-      // Cyan glow burst
-      tl.to(slashRef.current, {
-        boxShadow: '0 0 100px 50px rgba(0, 180, 216, 0.8)',
+        backgroundColor: '#e0e8f0',
         duration: 0.2,
         ease: 'power2.out',
-      }, '-=0.3')
+      })
+
+      // Slash effect - diagonal wipe (smooth)
+      tl.to(slashRef.current, {
+        clipPath: 'polygon(-10% -10%, 110% -10%, 110% 110%, -10% 110%)',
+        duration: 0.5,
+        ease: 'power2.inOut',
+      }, '-=0.1')
+
+      // Subtle cyan glow
+      tl.to(slashRef.current, {
+        boxShadow: '0 0 60px 30px rgba(0, 180, 216, 0.4)',
+        duration: 0.3,
+        ease: 'power2.out',
+      }, '-=0.35')
 
       // Fade out entire intro
       tl.to(containerRef.current, {
         opacity: 0,
-        duration: 0.3,
-        ease: 'power2.in',
+        duration: 0.5,
+        ease: 'power2.inOut',
         onComplete: () => {
           onComplete()
         },
-      }, '-=0.1')
+      }, '-=0.15')
     }
 
     // Fallback timer in case video events don't fire properly
