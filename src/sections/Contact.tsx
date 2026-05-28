@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 const inputClass =
   'w-full px-4 py-3 rounded-xl liquid-glass-morphic text-white placeholder-white/50 border border-white/25 focus:border-white/50 focus:outline-none focus:ring-2 focus:ring-white/20 transition-all'
