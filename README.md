@@ -1,6 +1,6 @@
-# React + TypeScript + Vite
+# Bekky Portfolio — 3D Immersive Portfolio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React + TypeScript + Vite portfolio site with GSAP animations, Lenis smooth scrolling, and Tailwind styling.
 
 Currently, two official plugins are available:
 
