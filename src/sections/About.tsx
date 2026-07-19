@@ -9,6 +9,9 @@ export default function About() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
+      // Guarantee clipped state before scrollTrigger evaluates
+      gsap.set(sectionRef.current, { clipPath: 'polygon(0 0, 0 0, 0 100%, 0 100%)' })
+
       // Diagonal clip-path reveal from top-left
       gsap.fromTo(
         sectionRef.current,
@@ -95,7 +98,7 @@ export default function About() {
     <section
       id="about"
       ref={sectionRef}
-      className="relative min-h-screen w-full overflow-hidden py-24 md:py-32 -mt-8 z-10"
+      className="relative min-h-screen w-full overflow-hidden py-24 md:py-32 -mt-8 z-[10]"
     >
       <div
         ref={imageRef}

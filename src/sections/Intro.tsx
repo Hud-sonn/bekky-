@@ -10,6 +10,7 @@ export default function Intro({ onComplete }: IntroProps) {
   const videoRef = useRef<HTMLVideoElement>(null)
   const slashRef = useRef<HTMLDivElement>(null)
   const [videoReady, setVideoReady] = useState(false)
+  const exitPlayedRef = useRef(false)
 
   useEffect(() => {
     const video = videoRef.current
@@ -18,76 +19,80 @@ export default function Intro({ onComplete }: IntroProps) {
     const handleCanPlay = () => {
       setVideoReady(true)
       video.play().catch(() => {})
+      // Deterministic exit: fire exactly at 4.2s after play starts
+      setTimeout(() => {
+        if (!exitPlayedRef.current) {
+          video.pause()
+          playExitAnimation()
+        }
+      }, 4200)
     }
 
-    video.addEventListener('canplaythrough', handleCanPlay)
-    video.load()
-
-    return () => {
-      video.removeEventListener('canplaythrough', handleCanPlay)
-    }
-  }, [])
-
-  useEffect(() => {
-    if (!videoReady) return
-
-    const video = videoRef.current
-    if (!video) return
-
-    const handleTimeUpdate = () => {
-      if (video.currentTime >= 4.2) {
-        video.pause()
+    const handleError = () => {
+      // Video failed to load/decode — exit immediately instead of waiting 5.5s
+      if (!exitPlayedRef.current) {
+        setVideoReady(true)
         playExitAnimation()
       }
     }
 
-    video.addEventListener('timeupdate', handleTimeUpdate)
-
-    const playExitAnimation = () => {
-      const tl = gsap.timeline()
-
-      // Soft light flash (not pure white)
-      tl.to(containerRef.current, {
-        backgroundColor: '#e0e8f0',
-        duration: 0.2,
-        ease: 'power2.out',
-      })
-
-      // Slash effect - diagonal wipe (smooth)
-      tl.to(slashRef.current, {
-        clipPath: 'polygon(-10% -10%, 110% -10%, 110% 110%, -10% 110%)',
-        duration: 0.5,
-        ease: 'power2.inOut',
-      }, '-=0.1')
-
-      // Subtle cyan glow
-      tl.to(slashRef.current, {
-        boxShadow: '0 0 60px 30px rgba(0, 180, 216, 0.4)',
-        duration: 0.3,
-        ease: 'power2.out',
-      }, '-=0.35')
-
-      // Fade out entire intro
-      tl.to(containerRef.current, {
-        opacity: 0,
-        duration: 0.5,
-        ease: 'power2.inOut',
-        onComplete: () => {
-          onComplete()
-        },
-      }, '-=0.15')
-    }
-
-    // Fallback timer in case video events don't fire properly
-    const fallbackTimer = setTimeout(() => {
-      playExitAnimation()
-    }, 5500)
+    video.addEventListener('canplaythrough', handleCanPlay)
+    video.addEventListener('error', handleError)
+    video.load()
 
     return () => {
-      video.removeEventListener('timeupdate', handleTimeUpdate)
-      clearTimeout(fallbackTimer)
+      video.removeEventListener('canplaythrough', handleCanPlay)
+      video.removeEventListener('error', handleError)
     }
-  }, [videoReady, onComplete])
+  }, [])
+
+  const playExitAnimation = () => {
+    if (exitPlayedRef.current) return
+    exitPlayedRef.current = true
+
+    const tl = gsap.timeline()
+
+    // Subtle neutral dark fade (no blue tint) — lets cyan slash be the only color
+    tl.to(containerRef.current, {
+      backgroundColor: 'rgba(0,0,0,0.3)',
+      duration: 0.2,
+      ease: 'power2.out',
+    })
+
+    // Slash effect — diagonal wipe
+    tl.to(slashRef.current, {
+      clipPath: 'polygon(-10% -10%, 110% -10%, 110% 110%, -10% 110%)',
+      duration: 0.5,
+      ease: 'power2.inOut',
+    }, '-=0.1')
+
+    // Subtle cyan glow
+    tl.to(slashRef.current, {
+      boxShadow: '0 0 60px 30px rgba(0, 180, 216, 0.4)',
+      duration: 0.3,
+      ease: 'power2.out',
+    }, '-=0.35')
+
+    // Fade out entire intro
+    tl.to(containerRef.current, {
+      opacity: 0,
+      duration: 0.5,
+      ease: 'power2.inOut',
+      onComplete: () => {
+        onComplete()
+      },
+    }, '-=0.15')
+  }
+
+  // Fallback timer in case video events don't fire at all (e.g. network blocked)
+  useEffect(() => {
+    const fallbackTimer = setTimeout(() => {
+      if (!exitPlayedRef.current) {
+        playExitAnimation()
+      }
+    }, 5500)
+    return () => clearTimeout(fallbackTimer)
+  }, [])
 
   return (
     <div
@@ -95,7 +100,7 @@ export default function Intro({ onComplete }: IntroProps) {
       className="fixed inset-0 z-[100] flex items-center justify-center overflow-hidden"
       style={{ backgroundColor: '#000' }}
     >
-      {/* Katana video */}
+      {/* Katana video — rendered first, unconditionally, to maximize preload head start */}
       <video
         ref={videoRef}
         className="absolute inset-0 w-full h-full object-cover"

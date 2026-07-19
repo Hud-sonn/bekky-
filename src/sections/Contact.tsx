@@ -18,6 +18,9 @@ export default function Contact() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
+      // Guarantee clipped state before scrollTrigger evaluates
+      gsap.set(sectionRef.current, { clipPath: 'circle(0% at 50% 50%)' })
+
       // Radial clip-path reveal from center
       gsap.fromTo(
         sectionRef.current,
@@ -107,7 +110,7 @@ export default function Contact() {
     <section
       id="contact"
       ref={sectionRef}
-      className="relative w-full min-h-screen py-24 md:py-32 overflow-hidden -mt-8 z-10"
+      className="relative w-full min-h-screen py-24 md:py-32 overflow-hidden -mt-8 z-[21]"
     >
       <div
         className="absolute inset-0 w-full h-full"

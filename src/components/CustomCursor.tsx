@@ -65,20 +65,26 @@ export default function CustomCursor() {
     document.addEventListener('mouseenter', handleMouseEnter)
     document.addEventListener('mouseleave', handleMouseLeave)
 
-    const interactiveElements = document.querySelectorAll('a, button, [data-cursor-expand]')
-    interactiveElements.forEach((el) => {
-      el.addEventListener('mouseenter', handleHoverStart)
-      el.addEventListener('mouseleave', handleHoverEnd)
-    })
+    // Event delegation — works for elements that mount at any time
+    const handleMouseOver = (e: MouseEvent) => {
+      if ((e.target as HTMLElement).closest('a, button, [data-cursor-expand]')) {
+        handleHoverStart()
+      }
+    }
+    const handleMouseOut = (e: MouseEvent) => {
+      if ((e.target as HTMLElement).closest('a, button, [data-cursor-expand]')) {
+        handleHoverEnd()
+      }
+    }
+    document.addEventListener('mouseover', handleMouseOver)
+    document.addEventListener('mouseout', handleMouseOut)
 
     return () => {
       document.removeEventListener('mousemove', moveCursor)
       document.removeEventListener('mouseenter', handleMouseEnter)
       document.removeEventListener('mouseleave', handleMouseLeave)
-      interactiveElements.forEach((el) => {
-        el.removeEventListener('mouseenter', handleHoverStart)
-        el.removeEventListener('mouseleave', handleHoverEnd)
-      })
+      document.removeEventListener('mouseover', handleMouseOver)
+      document.removeEventListener('mouseout', handleMouseOut)
     }
   }, [])
 

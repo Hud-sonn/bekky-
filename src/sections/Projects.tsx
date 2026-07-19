@@ -23,6 +23,27 @@ const topProjects = [
     year: '2024',
     image: '/images/projects/bevah-health.jpg',
   },
+  {
+    id: 7,
+    name: 'Web Landing UI',
+    category: 'Web Design / Landing Page',
+    year: '2025',
+    image: '/images/projects/web-landing-ui.jpg',
+  },
+  {
+    id: 8,
+    name: 'Foodly Mobile App',
+    category: 'Mobile App UI/UX',
+    year: '2025',
+    image: '/images/projects/foodly-mobile-app.jpg',
+  },
+  {
+    id: 9,
+    name: 'Finance Dashboard',
+    category: 'Business Intelligence / Dashboard',
+    year: '2024',
+    image: '/images/projects/finance-dashboard.jpg',
+  },
 ]
 
 const bottomProjects = [
@@ -46,6 +67,41 @@ const bottomProjects = [
     category: 'Skincare E-commerce',
     year: '2023',
     image: '/images/projects/daisy-skin.jpg',
+  },
+  {
+    id: 10,
+    name: 'Anime Character Design',
+    category: 'Illustration / Character Art',
+    year: '2025',
+    image: '/images/projects/anime-character.jpg',
+  },
+  {
+    id: 11,
+    name: 'Design Mockup',
+    category: 'Brand Mockup / Presentation',
+    year: '2024',
+    image: '/images/projects/design-mockup.jpg',
+  },
+  {
+    id: 12,
+    name: 'Business Card Suite',
+    category: 'Print / Brand Collateral',
+    year: '2025',
+    image: '/images/projects/business-card-01.jpg',
+  },
+  {
+    id: 13,
+    name: 'Business Card Collection',
+    category: 'Print / Brand Identity',
+    year: '2025',
+    image: '/images/projects/business-card-02.jpg',
+  },
+  {
+    id: 14,
+    name: 'Business Card Premium',
+    category: 'Print / Luxury Branding',
+    year: '2024',
+    image: '/images/projects/business-card-03.jpg',
   },
 ]
 
@@ -249,7 +305,7 @@ export default function Projects() {
     <section
       id="projects"
       ref={sectionRef}
-      className="relative w-full overflow-hidden will-change-transform -mt-8 z-10"
+      className="relative w-full overflow-hidden will-change-transform -mt-8 z-[11]"
     >
       {/* Top zone: Nezuko background */}
       <div className="relative py-20 md:py-24">
