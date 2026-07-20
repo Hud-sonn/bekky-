@@ -26,14 +26,14 @@ export default function Contact() {
         sectionRef.current,
         { clipPath: 'circle(0% at 50% 50%)' },
         {
-          clipPath: 'circle(100% at 50% 50%)',
+          clipPath: 'circle(75% at 50% 50%)',
           duration: 1.4,
           ease: 'power3.out',
           scrollTrigger: {
             trigger: sectionRef.current,
             start: 'top 85%',
             end: 'top 30%',
-            scrub: 1,
+            scrub: 2,
           },
         }
       )

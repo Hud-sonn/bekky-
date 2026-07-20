@@ -6,6 +6,7 @@ export default function About() {
   const imageRef = useRef<HTMLDivElement>(null)
   const titleRef = useRef<HTMLHeadingElement>(null)
   const textRef = useRef<HTMLDivElement>(null)
+  const videoRef = useRef<HTMLVideoElement>(null)
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -94,6 +95,26 @@ export default function About() {
     return () => ctx.revert()
   }, [])
 
+  // Pause video when off-screen to save GPU decode
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video) return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          video.play().catch(() => {})
+        } else {
+          video.pause()
+        }
+      },
+      { threshold: 0 }
+    )
+
+    observer.observe(sectionRef.current!)
+    return () => observer.disconnect()
+  }, [])
+
   return (
     <section
       id="about"
@@ -102,12 +123,11 @@ export default function About() {
     >
       <div
         ref={imageRef}
-        className="absolute inset-0 w-full h-[130%] -top-[15%]"
+        className="absolute inset-0 w-full h-[130%] -top-[15%] will-change-transform"
         style={{
           backgroundImage: 'url(/images/hashiras.jpg)',
           backgroundSize: 'cover',
           backgroundPosition: 'center 30%',
-          willChange: 'transform',
         }}
       />
 
@@ -120,8 +140,8 @@ export default function About() {
             }}
           >
             <video
+              ref={videoRef}
               src="/videos/nezuko.mp4"
-              autoPlay
               loop
               muted
               playsInline

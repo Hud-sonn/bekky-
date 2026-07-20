@@ -72,9 +72,8 @@ export default function Hero({ scrollTo }: HeroProps) {
         ref={bgRef}
         src="/images/hero-bg.jpg"
         alt=""
-        loading="lazy"
-        className="absolute inset-0 w-full h-full object-cover object-[center_30%]"
-        style={{ willChange: 'transform' }}
+        fetchPriority="high"
+        className="absolute inset-0 w-full h-full object-cover object-[center_30%] will-change-transform"
       />
 
       {/* Subtle dark vignette for readability — neutral black, no blue */}

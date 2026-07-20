@@ -18,6 +18,7 @@ export default function App() {
   const [introComplete, setIntroComplete] = useState(false)
   const [showContent, setShowContent] = useState(false)
   const lenisRef = useRef<Lenis | null>(null)
+  const rafRef = useRef<number>(0)
 
   useEffect(() => {
     if (introComplete) {
@@ -29,8 +30,9 @@ export default function App() {
     if (!showContent) return
 
     const lenis = new Lenis({
-      lerp: 0.1,
+      lerp: 0.08,
       smoothWheel: true,
+      touchMultiplier: 1.5,
     })
     lenisRef.current = lenis
 
@@ -38,14 +40,24 @@ export default function App() {
 
     function raf(time: number) {
       lenis.raf(time)
-      requestAnimationFrame(raf)
+      rafRef.current = requestAnimationFrame(raf)
     }
-    requestAnimationFrame(raf)
+    rafRef.current = requestAnimationFrame(raf)
 
-    const refreshTimer = setTimeout(() => ScrollTrigger.refresh(), 500)
+    // Refresh ScrollTrigger after layout settles — images, videos, fonts
+    const refreshTimer = setTimeout(() => ScrollTrigger.refresh(), 800)
+
+    // Also refresh on resize so late-loading assets don't break positions
+    const handleResize = () => {
+      ScrollTrigger.refresh()
+      lenis.resize()
+    }
+    window.addEventListener('resize', handleResize)
 
     return () => {
       clearTimeout(refreshTimer)
+      cancelAnimationFrame(rafRef.current)
+      window.removeEventListener('resize', handleResize)
       lenis.destroy()
     }
   }, [showContent])

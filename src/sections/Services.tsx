@@ -91,37 +91,30 @@ export default function Services() {
           }
         )
 
+        // Single ScrollTrigger per item instead of 4 callbacks — fewer scroll listeners
         ScrollTrigger.create({
           trigger: item,
           start: 'top 60%',
           end: 'bottom 40%',
-          onEnter: () => {
+          onToggle: (self) => {
+            const isActive = self.isActive
             gsap.to(textEl, {
-              color: '#03045E',
-              textShadow: '0 0 10px rgba(0, 119, 182, 0.3)',
+              color: isActive ? '#03045E' : '#0077B6',
+              textShadow: isActive ? '0 0 10px rgba(0, 119, 182, 0.3)' : 'none',
               duration: 0.4,
+              overwrite: true,
             })
-            gsap.to(numEl, { color: '#03045E', scale: 1.1, duration: 0.4 })
-            gsap.to(descEl, { opacity: 1, y: 0, duration: 0.4 })
-          },
-          onLeave: () => {
-            gsap.to(textEl, { color: '#0077B6', textShadow: 'none', duration: 0.4 })
-            gsap.to(numEl, { color: '#0077B6', scale: 1, duration: 0.4 })
-            gsap.to(descEl, { opacity: 0.5, y: 0, duration: 0.4 })
-          },
-          onEnterBack: () => {
-            gsap.to(textEl, {
-              color: '#03045E',
-              textShadow: '0 0 10px rgba(0, 119, 182, 0.3)',
+            gsap.to(numEl, {
+              color: isActive ? '#03045E' : '#0077B6',
+              scale: isActive ? 1.1 : 1,
               duration: 0.4,
+              overwrite: true,
             })
-            gsap.to(numEl, { color: '#03045E', scale: 1.1, duration: 0.4 })
-            gsap.to(descEl, { opacity: 1, y: 0, duration: 0.4 })
-          },
-          onLeaveBack: () => {
-            gsap.to(textEl, { color: '#0077B6', textShadow: 'none', duration: 0.4 })
-            gsap.to(numEl, { color: '#0077B6', scale: 1, duration: 0.4 })
-            gsap.to(descEl, { opacity: 0.5, y: 0, duration: 0.4 })
+            gsap.to(descEl, {
+              opacity: isActive ? 1 : 0.5,
+              duration: 0.4,
+              overwrite: true,
+            })
           },
         })
       })
@@ -146,12 +139,12 @@ export default function Services() {
 
       <div
         ref={containerRef}
-        className="relative z-10 max-w-6xl mx-auto px-6 md:px-12"
+        className="relative z-10 max-w-6xl mx-auto px-6 md:px-12 will-change-transform"
         style={{ transformStyle: 'preserve-3d' }}
       >
         <h2
           ref={titleRef}
-          className="font-display text-5xl md:text-7xl lg:text-8xl font-bold text-black mb-16 md:mb-24 text-center"
+          className="font-display text-5xl md:text-7xl lg:text-8xl font-bold text-black mb-16 md:mb-24 text-center will-change-transform"
         >
           Services
         </h2>

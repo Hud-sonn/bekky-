@@ -16,52 +16,67 @@ export default function CustomCursor() {
 
     gsap.set([cursor, dot], { xPercent: -50, yPercent: -50, opacity: 0 })
 
+    // Throttled mousemove using requestAnimationFrame — avoids creating 120 GSAP tweens/sec
+    let rafId = 0
+    let lastX = 0
+    let lastY = 0
+    let needsUpdate = false
+
     const moveCursor = (e: MouseEvent) => {
-      gsap.to(cursor, {
-        x: e.clientX,
-        y: e.clientY,
-        duration: 0.08,
-        ease: 'power2.out',
-      })
-      gsap.to(dot, {
-        x: e.clientX,
-        y: e.clientY,
-        duration: 0.02,
-        ease: 'none',
-      })
+      lastX = e.clientX
+      lastY = e.clientY
+      needsUpdate = true
+      if (!rafId) {
+        rafId = requestAnimationFrame(() => {
+          if (needsUpdate) {
+            // Use set() for instant follow on dot, set with slight tween for cursor ring
+            gsap.set(dot, { x: lastX, y: lastY })
+            gsap.to(cursor, {
+              x: lastX,
+              y: lastY,
+              duration: 0.15,
+              ease: 'power2.out',
+              overwrite: true,
+            })
+            needsUpdate = false
+          }
+          rafId = 0
+        })
+      }
     }
 
     const handleMouseEnter = () => {
-      gsap.to([cursor, dot], { opacity: 1, duration: 0.3 })
+      gsap.to([cursor, dot], { opacity: 1, duration: 0.3, overwrite: true })
     }
 
     const handleMouseLeave = () => {
-      gsap.to([cursor, dot], { opacity: 0, duration: 0.3 })
+      gsap.to([cursor, dot], { opacity: 0, duration: 0.3, overwrite: true })
     }
 
     const handleHoverStart = () => {
+      // Use scale transform instead of width/height to avoid layout recalc
       gsap.to(cursor, {
-        width: 60,
-        height: 60,
+        scale: 1.5,
         background: 'rgba(0, 180, 216, 0.15)',
         borderColor: 'rgba(0, 180, 216, 0.5)',
         duration: 0.3,
         ease: 'power2.out',
+        overwrite: true,
       })
     }
 
     const handleHoverEnd = () => {
       gsap.to(cursor, {
-        width: 40,
-        height: 40,
+        scale: 1,
         background: 'transparent',
         borderColor: 'rgba(0, 180, 216, 0.8)',
         duration: 0.3,
         ease: 'power2.out',
+        overwrite: true,
       })
     }
 
-    document.addEventListener('mousemove', moveCursor)
+    document.addEventListener('mousemove', moveCursor, { passive: true })
     document.addEventListener('mouseenter', handleMouseEnter)
     document.addEventListener('mouseleave', handleMouseLeave)
 
@@ -80,6 +95,7 @@ export default function CustomCursor() {
     document.addEventListener('mouseout', handleMouseOut)
 
     return () => {
+      if (rafId) cancelAnimationFrame(rafId)
       document.removeEventListener('mousemove', moveCursor)
       document.removeEventListener('mouseenter', handleMouseEnter)
       document.removeEventListener('mouseleave', handleMouseLeave)
@@ -96,7 +112,7 @@ export default function CustomCursor() {
     <>
       <div
         ref={cursorRef}
-        className="fixed top-0 left-0 pointer-events-none z-[9999] hidden md:block"
+        className="fixed top-0 left-0 pointer-events-none z-[9999] hidden md:block will-change-transform"
         style={{
           width: 40,
           height: 40,
@@ -108,7 +124,7 @@ export default function CustomCursor() {
       />
       <div
         ref={cursorDotRef}
-        className="fixed top-0 left-0 pointer-events-none z-[9999] hidden md:block"
+        className="fixed top-0 left-0 pointer-events-none z-[9999] hidden md:block will-change-transform"
         style={{
           width: 6,
           height: 6,

@@ -10,14 +10,6 @@ preloadVideo.as = 'video'
 preloadVideo.href = '/videos/katana-intro.mp4'
 document.head.appendChild(preloadVideo)
 
-// Also start loading the video data early
-const earlyVideo = document.createElement('video')
-earlyVideo.src = '/videos/katana-intro.mp4'
-earlyVideo.preload = 'auto'
-earlyVideo.muted = true
-earlyVideo.style.display = 'none'
-document.body.appendChild(earlyVideo)
-
 createRoot(document.getElementById('root')!).render(
   <BrowserRouter>
     <App />

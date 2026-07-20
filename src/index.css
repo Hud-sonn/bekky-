@@ -46,55 +46,55 @@
   }
 
   .liquid-glass {
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.18);
   }
 
   .liquid-glass-light {
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     background: rgba(255, 255, 255, 0.55);
     border: 1px solid rgba(255, 255, 255, 0.65);
   }
 
   .liquid-glass-dark {
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     background: rgba(3, 4, 94, 0.45);
     border: 1px solid rgba(144, 224, 239, 0.2);
   }
 
   .liquid-glass-green {
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     background: rgba(34, 197, 94, 0.2);
     border: 1px solid rgba(34, 197, 94, 0.45);
   }
 
   .liquid-glass-morphic {
-    backdrop-filter: blur(24px) saturate(1.2);
-    -webkit-backdrop-filter: blur(24px) saturate(1.2);
+    backdrop-filter: blur(20px) saturate(1.2);
+    -webkit-backdrop-filter: blur(20px) saturate(1.2);
     background: rgba(255, 255, 255, 0.12);
     border: 1px solid rgba(255, 255, 255, 0.28);
     box-shadow:
       0 8px 32px rgba(0, 0, 0, 0.12),
       inset 0 1px 0 rgba(255, 255, 255, 0.25);
-    will-change: backdrop-filter;
+    contain: layout style;
   }
 
   .glass-card {
     @apply liquid-glass-dark;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     background: rgba(3, 4, 94, 0.6);
   }
 
   .glass-card-strong {
     @apply liquid-glass-dark;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     background: rgba(3, 4, 94, 0.75);
     border: 1px solid rgba(144, 224, 239, 0.25);
   }

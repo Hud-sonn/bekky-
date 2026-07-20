@@ -20,19 +20,21 @@ export default function Navigation({ scrollTo }: NavigationProps) {
   const [onLightSection, setOnLightSection] = useState(false)
 
   useEffect(() => {
+    // Cache DOM elements once — avoids getElementById on every scroll frame
+    const servicesEl = document.getElementById('services')
+    const projectsEl = document.getElementById('projects')
+
     const handleScroll = () => {
       setScrolled(window.scrollY > 80)
 
-      const services = document.getElementById('services')
-      const projects = document.getElementById('projects')
       const scrollY = window.scrollY + 100
 
-      const inServices = services && scrollY >= services.offsetTop
+      const inServices = servicesEl && scrollY >= servicesEl.offsetTop
       const inProjectsTop =
-        projects &&
-        scrollY >= projects.offsetTop &&
-        services &&
-        scrollY < services.offsetTop
+        projectsEl &&
+        scrollY >= projectsEl.offsetTop &&
+        servicesEl &&
+        scrollY < servicesEl.offsetTop
 
       setOnLightSection(Boolean(inServices || inProjectsTop))
     }
@@ -69,7 +71,7 @@ export default function Navigation({ scrollTo }: NavigationProps) {
     : 'text-white hover:text-white/80'
 
   return (
-    <nav ref={navRef} className="fixed top-0 left-0 right-0 z-50 transition-all duration-500 px-6 py-4">
+    <nav ref={navRef} className="fixed top-0 left-0 right-0 z-50 px-6 py-4">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <button
           onClick={() => handleNav('#hero')}

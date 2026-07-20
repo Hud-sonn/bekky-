@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, memo } from 'react'
 import gsap from 'gsap'
 
 const topProjects = [
@@ -105,17 +105,21 @@ const bottomProjects = [
   },
 ]
 
-function ProjectCard({
+const ProjectCard = memo(function ProjectCard({
   project,
-  hoveredId,
-  setHoveredId,
+  isHovered,
+  isAnyHovered,
+  onMouseEnter,
+  onMouseLeave,
   variant,
   index,
   aspectClass,
 }: {
   project: (typeof topProjects)[0]
-  hoveredId: number | null
-  setHoveredId: (id: number | null) => void
+  isHovered: boolean
+  isAnyHovered: boolean
+  onMouseEnter: () => void
+  onMouseLeave: () => void
   variant: 'light' | 'dark'
   index: number
   aspectClass: string
@@ -125,28 +129,22 @@ function ProjectCard({
   return (
     <div
       className={`project-card ${index % 2 === 0 ? 'project-card-left' : 'project-card-right'}`}
-      onMouseEnter={() => setHoveredId(project.id)}
-      onMouseLeave={() => setHoveredId(null)}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
     >
       <div
-        className={`group relative rounded-2xl overflow-hidden cursor-pointer ${
+        className={`group relative rounded-2xl overflow-hidden cursor-pointer will-change-transform transition-[transform,filter] duration-400 ease-out ${
           isDark ? '' : 'liquid-glass-light shadow-lg'
-        }`}
-        style={{
-          transform: hoveredId === project.id ? 'scale(1.02)' : 'scale(1)',
-          transition: 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-          filter:
-            hoveredId !== null && hoveredId !== project.id ? 'brightness(0.55)' : 'brightness(1)',
-        }}
+        } ${isHovered ? 'scale-[1.02]' : isAnyHovered ? 'brightness-[0.55]' : 'scale-100 brightness-100'}`}
       >
         <div className={`relative overflow-hidden ${aspectClass}`}>
           <img
             src={project.image}
             alt={project.name}
             loading="lazy"
-            className="w-full h-full object-cover object-center transition-transform duration-700"
+            className="w-full h-full object-cover object-center transition-transform duration-700 will-change-transform"
             style={{
-              transform: hoveredId === project.id ? 'scale(1.05)' : 'scale(1)',
+              transform: isHovered ? 'scale(1.05)' : 'scale(1)',
             }}
           />
 
@@ -156,7 +154,7 @@ function ProjectCard({
               background: isDark
                 ? 'linear-gradient(to top, rgba(3,4,94,0.95) 0%, rgba(3,4,94,0.3) 50%, transparent 100%)'
                 : 'linear-gradient(to top, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.15) 45%, transparent 100%)',
-              opacity: hoveredId === project.id ? 1 : 0.85,
+              opacity: isHovered ? 1 : 0.85,
             }}
           />
 
@@ -182,8 +180,8 @@ function ProjectCard({
             <div
               className="mt-4 transition-all duration-500"
               style={{
-                opacity: hoveredId === project.id ? 1 : 0,
-                transform: hoveredId === project.id ? 'translateY(0)' : 'translateY(10px)',
+                opacity: isHovered ? 1 : 0,
+                transform: isHovered ? 'translateY(0)' : 'translateY(10px)',
               }}
             >
               <span className="inline-flex items-center gap-2 text-sm text-cyan-glow font-medium">
@@ -204,7 +202,7 @@ function ProjectCard({
       </div>
     </div>
   )
-}
+})
 
 export default function Projects() {
   const sectionRef = useRef<HTMLElement>(null)
@@ -338,8 +336,10 @@ export default function Projects() {
               <ProjectCard
                 key={project.id}
                 project={project}
-                hoveredId={hoveredId}
-                setHoveredId={setHoveredId}
+                isHovered={hoveredId === project.id}
+                isAnyHovered={hoveredId !== null}
+                onMouseEnter={() => setHoveredId(project.id)}
+                onMouseLeave={() => setHoveredId(null)}
                 variant="light"
                 index={index}
                 aspectClass="aspect-[4/3]"
@@ -373,8 +373,10 @@ export default function Projects() {
               <ProjectCard
                 key={project.id}
                 project={project}
-                hoveredId={hoveredId}
-                setHoveredId={setHoveredId}
+                isHovered={hoveredId === project.id}
+                isAnyHovered={hoveredId !== null}
+                onMouseEnter={() => setHoveredId(project.id)}
+                onMouseLeave={() => setHoveredId(null)}
                 variant="dark"
                 index={index}
                 aspectClass="aspect-[3/4]"
