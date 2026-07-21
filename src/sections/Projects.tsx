@@ -152,7 +152,7 @@ const ProjectCard = memo(function ProjectCard({
             className="absolute inset-0 transition-opacity duration-500"
             style={{
               background: isDark
-                ? 'linear-gradient(to top, rgba(3,4,94,0.95) 0%, rgba(3,4,94,0.3) 50%, transparent 100%)'
+                ? 'linear-gradient(to top, rgba(15,15,25,0.95) 0%, rgba(15,15,25,0.3) 50%, transparent 100%)'
                 : 'linear-gradient(to top, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.15) 45%, transparent 100%)',
               opacity: isHovered ? 1 : 0.85,
             }}
@@ -211,6 +211,8 @@ export default function Projects() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
+      const isMobile = window.innerWidth < 768
+
       // Scale/fade reveal from 0.97
       gsap.fromTo(
         sectionRef.current,
@@ -231,15 +233,15 @@ export default function Projects() {
 
       gsap.fromTo(
         titleRef.current,
-        { opacity: 0, y: 50 },
+        { opacity: 0, y: isMobile ? 25 : 50 },
         {
           opacity: 1,
           y: 0,
-          duration: 1,
+          duration: isMobile ? 0.7 : 1,
           ease: 'power3.out',
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: 'top 70%',
+            start: 'top 75%',
             toggleActions: 'play none none reverse',
           },
         }
@@ -249,17 +251,17 @@ export default function Projects() {
       cards.forEach((card, i) => {
         gsap.fromTo(
           card,
-          { opacity: 0, y: 80, scale: 0.95 },
+          { opacity: 0, y: isMobile ? 40 : 80, scale: 0.95 },
           {
             opacity: 1,
             y: 0,
             scale: 1,
-            duration: 0.8,
-            delay: i * 0.1,
+            duration: isMobile ? 0.5 : 0.8,
+            delay: isMobile ? 0 : i * 0.08,
             ease: 'power3.out',
             scrollTrigger: {
               trigger: card,
-              start: 'top 85%',
+              start: 'top 90%',
               toggleActions: 'play none none reverse',
             },
           }
@@ -271,7 +273,7 @@ export default function Projects() {
 
       leftCards.forEach((card) => {
         gsap.to(card, {
-          yPercent: -8,
+          yPercent: isMobile ? -4 : -8,
           ease: 'none',
           scrollTrigger: {
             trigger: sectionRef.current,
@@ -284,7 +286,7 @@ export default function Projects() {
 
       rightCards.forEach((card) => {
         gsap.to(card, {
-          yPercent: -15,
+          yPercent: isMobile ? -6 : -15,
           ease: 'none',
           scrollTrigger: {
             trigger: sectionRef.current,
@@ -306,7 +308,7 @@ export default function Projects() {
       className="relative w-full overflow-hidden will-change-transform -mt-8 z-[11]"
     >
       {/* Top zone: Nezuko background */}
-      <div className="relative py-20 md:py-24">
+      <div className="relative py-14 md:py-24">
         <div
           className="absolute inset-0 w-full h-full"
           style={{

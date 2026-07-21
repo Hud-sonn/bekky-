@@ -19,7 +19,7 @@
 
   body {
     font-family: 'Inter', sans-serif;
-    background-color: var(--void-indigo);
+    background-color: #0a0a0f;
     color: var(--ice-mist);
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
@@ -34,6 +34,15 @@
     background: rgba(0, 180, 216, 0.3);
     color: #CAF0F8;
   }
+
+  /* Reduce motion for accessibility and mobile perf */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
 }
 
 @layer components {
@@ -45,6 +54,7 @@
     font-family: 'JetBrains Mono', monospace;
   }
 
+  /* Neutral glass — white-based, no blue tint */
   .liquid-glass {
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
@@ -59,11 +69,12 @@
     border: 1px solid rgba(255, 255, 255, 0.65);
   }
 
+  /* Dark glass — neutral charcoal, NOT blue */
   .liquid-glass-dark {
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    background: rgba(3, 4, 94, 0.45);
-    border: 1px solid rgba(144, 224, 239, 0.2);
+    background: rgba(20, 20, 30, 0.65);
+    border: 1px solid rgba(255, 255, 255, 0.12);
   }
 
   .liquid-glass-green {
@@ -73,30 +84,31 @@
     border: 1px solid rgba(34, 197, 94, 0.45);
   }
 
+  /* Morphic glass — neutral frosted white, no blue */
   .liquid-glass-morphic {
     backdrop-filter: blur(20px) saturate(1.2);
     -webkit-backdrop-filter: blur(20px) saturate(1.2);
-    background: rgba(255, 255, 255, 0.12);
-    border: 1px solid rgba(255, 255, 255, 0.28);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.25);
     box-shadow:
       0 8px 32px rgba(0, 0, 0, 0.12),
-      inset 0 1px 0 rgba(255, 255, 255, 0.25);
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
     contain: layout style;
   }
 
+  /* Glass card — neutral dark, NOT blue */
   .glass-card {
-    @apply liquid-glass-dark;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    background: rgba(3, 4, 94, 0.6);
+    background: rgba(20, 20, 30, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
   .glass-card-strong {
-    @apply liquid-glass-dark;
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    background: rgba(3, 4, 94, 0.75);
-    border: 1px solid rgba(144, 224, 239, 0.25);
+    background: rgba(20, 20, 30, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.15);
   }
 
   .glow-text {

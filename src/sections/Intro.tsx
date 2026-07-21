@@ -29,7 +29,6 @@ export default function Intro({ onComplete }: IntroProps) {
     }
 
     const handleError = () => {
-      // Video failed to load/decode — exit immediately instead of waiting 5.5s
       if (!exitPlayedRef.current) {
         setVideoReady(true)
         playExitAnimation()
@@ -52,39 +51,26 @@ export default function Intro({ onComplete }: IntroProps) {
 
     const tl = gsap.timeline()
 
-    // Subtle neutral dark fade (no blue tint) — lets cyan slash be the only color
-    tl.to(containerRef.current, {
-      backgroundColor: 'rgba(0,0,0,0.3)',
-      duration: 0.2,
-      ease: 'power2.out',
+    // White flash — clean transition, no blue
+    tl.to(slashRef.current, {
+      opacity: 1,
+      clipPath: 'polygon(-10% -10%, 110% -10%, 110% 110%, -10% 110%)',
+      duration: 0.4,
+      ease: 'power2.inOut',
     })
 
-    // Slash effect — diagonal wipe
-    tl.to(slashRef.current, {
-      clipPath: 'polygon(-10% -10%, 110% -10%, 110% 110%, -10% 110%)',
-      duration: 0.5,
-      ease: 'power2.inOut',
-    }, '-=0.1')
-
-    // Subtle cyan glow
-    tl.to(slashRef.current, {
-      boxShadow: '0 0 60px 30px rgba(0, 180, 216, 0.4)',
-      duration: 0.3,
-      ease: 'power2.out',
-    }, '-=0.35')
-
-    // Fade out entire intro
+    // Fade out entire intro on white
     tl.to(containerRef.current, {
       opacity: 0,
-      duration: 0.5,
+      duration: 0.3,
       ease: 'power2.inOut',
       onComplete: () => {
         onComplete()
       },
-    }, '-=0.15')
+    }, '-=0.1')
   }
 
-  // Fallback timer in case video events don't fire at all (e.g. network blocked)
+  // Fallback timer in case video events don't fire at all
   useEffect(() => {
     const fallbackTimer = setTimeout(() => {
       if (!exitPlayedRef.current) {
@@ -100,7 +86,7 @@ export default function Intro({ onComplete }: IntroProps) {
       className="fixed inset-0 z-[100] flex items-center justify-center overflow-hidden"
       style={{ backgroundColor: '#000' }}
     >
-      {/* Katana video — rendered first, unconditionally, to maximize preload head start */}
+      {/* Katana video */}
       <video
         ref={videoRef}
         className="absolute inset-0 w-full h-full object-cover"
@@ -111,21 +97,21 @@ export default function Intro({ onComplete }: IntroProps) {
         style={{ opacity: videoReady ? 1 : 0, transition: 'opacity 0.3s' }}
       />
 
-      {/* Slash transition overlay */}
+      {/* White flash overlay — no blue, no screen blend */}
       <div
         ref={slashRef}
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: 'linear-gradient(135deg, #00B4D8 0%, #90E0EF 50%, #00B4D8 100%)',
+          background: '#ffffff',
           clipPath: 'polygon(50% 50%, 50% 50%, 50% 50%, 50% 50%)',
-          mixBlendMode: 'screen',
+          opacity: 0,
         }}
       />
 
-      {/* Loading indicator */}
+      {/* Loading indicator — neutral white, no cyan */}
       {!videoReady && (
         <div className="absolute inset-0 flex items-center justify-center" style={{ background: '#000' }}>
-          <div className="w-12 h-12 border-2 border-cyan-glow border-t-transparent rounded-full animate-spin" />
+          <div className="w-12 h-12 border-2 border-white border-t-transparent rounded-full animate-spin" />
         </div>
       )}
     </div>

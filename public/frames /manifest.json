@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "sourceFile": "katana-intro.mp4",
+  "createdAt": "2026-07-20T18:21:34.733863+00:00",
+  "fps": 24.0,
+  "frameCount": 147,
+  "trimStart": 0.0,
+  "trimEnd": 6.152993,
+  "format": "jpeg",
+  "quality": {
+    "qv": 8
+  },
+  "width": 3840,
+  "height": 2160,
+  "basePath": "/frames/katana-intro/",
+  "filenamePattern": "frame_%04d.jpg",
+  "totalSizeBytes": 23831070,
+  "sourceSizeBytes": 5659047
+}

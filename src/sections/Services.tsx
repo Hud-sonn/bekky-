@@ -37,26 +37,31 @@ export default function Services() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.fromTo(
-        containerRef.current,
-        { rotateX: 45 },
-        {
-          rotateX: 0,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 25%',
-            end: 'bottom 75%',
-            scrub: true,
-          },
-        }
-      )
+      // Only do 3D rotateX on desktop — too heavy on mobile
+      const isMobile = window.innerWidth < 768
+
+      if (!isMobile) {
+        gsap.fromTo(
+          containerRef.current,
+          { rotateX: 30 },
+          {
+            rotateX: 0,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: 'top 25%',
+              end: 'bottom 75%',
+              scrub: true,
+            },
+          }
+        )
+      }
 
       gsap.fromTo(
         titleRef.current,
-        { yPercent: -50 },
+        { yPercent: -30 },
         {
-          yPercent: 50,
+          yPercent: 30,
           ease: 'none',
           scrollTrigger: {
             trigger: sectionRef.current,
@@ -76,22 +81,22 @@ export default function Services() {
 
         gsap.fromTo(
           item,
-          { opacity: 0, x: -60 },
+          { opacity: 0, x: isMobile ? -30 : -60 },
           {
             opacity: 1,
             x: 0,
-            duration: 0.8,
-            delay: index * 0.15,
+            duration: isMobile ? 0.6 : 0.8,
+            delay: index * 0.1,
             ease: 'power3.out',
             scrollTrigger: {
               trigger: item,
-              start: 'top 80%',
+              start: 'top 85%',
               toggleActions: 'play none none reverse',
             },
           }
         )
 
-        // Single ScrollTrigger per item instead of 4 callbacks — fewer scroll listeners
+        // Single ScrollTrigger per item — color highlight on active
         ScrollTrigger.create({
           trigger: item,
           start: 'top 60%',
@@ -99,14 +104,13 @@ export default function Services() {
           onToggle: (self) => {
             const isActive = self.isActive
             gsap.to(textEl, {
-              color: isActive ? '#03045E' : '#0077B6',
-              textShadow: isActive ? '0 0 10px rgba(0, 119, 182, 0.3)' : 'none',
+              color: isActive ? '#111' : '#444',
               duration: 0.4,
               overwrite: true,
             })
             gsap.to(numEl, {
-              color: isActive ? '#03045E' : '#0077B6',
-              scale: isActive ? 1.1 : 1,
+              color: isActive ? '#111' : '#444',
+              scale: isActive ? 1.05 : 1,
               duration: 0.4,
               overwrite: true,
             })
@@ -127,66 +131,65 @@ export default function Services() {
     <section
       id="services"
       ref={sectionRef}
-      className="relative w-full py-24 md:py-40 overflow-hidden bg-white rounded-t-[3rem] md:rounded-t-[4rem] -mt-8 z-20"
-      style={{ perspective: 1000 }}
+      className="relative w-full py-20 md:py-40 overflow-hidden bg-white rounded-t-[2rem] md:rounded-t-[4rem] -mt-8 z-20"
     >
       <div
         className="absolute top-0 left-0 right-0 h-px"
         style={{
-          background: 'linear-gradient(to right, transparent, rgba(0, 119, 182, 0.25), transparent)',
+          background: 'linear-gradient(to right, transparent, rgba(0, 0, 0, 0.08), transparent)',
         }}
       />
 
       <div
         ref={containerRef}
-        className="relative z-10 max-w-6xl mx-auto px-6 md:px-12 will-change-transform"
+        className="relative z-10 max-w-6xl mx-auto px-6 md:px-12"
         style={{ transformStyle: 'preserve-3d' }}
       >
         <h2
           ref={titleRef}
-          className="font-display text-5xl md:text-7xl lg:text-8xl font-bold text-black mb-16 md:mb-24 text-center will-change-transform"
+          className="font-display text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold text-black mb-12 md:mb-24 text-center will-change-transform"
         >
           Services
         </h2>
 
-        <div className="space-y-8 md:space-y-12">
+        <div className="space-y-6 md:space-y-12">
           {services.map((service, index) => (
             <div
               key={service.number}
               ref={(el) => {
                 if (el) itemsRef.current[index] = el
               }}
-              className="group relative flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-10 py-6 md:py-8 border-b border-black/10 cursor-default"
+              className="group relative flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-10 py-5 md:py-8 border-b border-black/10 cursor-default"
             >
               <span
-                className="service-num font-display text-5xl md:text-7xl font-bold transition-all duration-400 flex-shrink-0"
-                style={{ color: '#0077B6', minWidth: 100 }}
+                className="service-num font-display text-4xl sm:text-5xl md:text-7xl font-bold transition-all duration-400 flex-shrink-0"
+                style={{ color: '#444', minWidth: 80 }}
               >
                 {service.number}
               </span>
 
               <div className="flex-1">
                 <h3
-                  className="service-text font-display text-2xl md:text-4xl font-bold transition-all duration-400 uppercase tracking-tight"
-                  style={{ color: '#0077B6' }}
+                  className="service-text font-display text-xl sm:text-2xl md:text-4xl font-bold transition-all duration-400 uppercase tracking-tight"
+                  style={{ color: '#444' }}
                 >
                   {service.title}
                 </h3>
                 <p
-                  className="service-desc mt-2 text-black/60 text-sm md:text-base max-w-2xl transition-all duration-400"
+                  className="service-desc mt-2 text-black/50 text-sm md:text-base max-w-2xl transition-all duration-400"
                   style={{ opacity: 0.5 }}
                 >
                   {service.description}
                 </p>
               </div>
 
-              <div className="hidden md:flex items-center justify-center w-12 h-12 rounded-full border border-twilight-blue/30 group-hover:border-twilight-blue group-hover:bg-twilight-blue/10 transition-all duration-400 flex-shrink-0">
+              <div className="hidden md:flex items-center justify-center w-12 h-12 rounded-full border border-black/15 group-hover:border-black/40 group-hover:bg-black/5 transition-all duration-400 flex-shrink-0">
                 <svg
                   width="20"
                   height="20"
                   viewBox="0 0 20 20"
                   fill="none"
-                  className="text-twilight-blue/50 group-hover:text-twilight-blue transition-colors"
+                  className="text-black/30 group-hover:text-black/70 transition-colors"
                 >
                   <path
                     d="M7 14L13 10L7 6"
@@ -205,7 +208,7 @@ export default function Services() {
       <div
         className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-px"
         style={{
-          background: 'linear-gradient(to right, transparent, rgba(0, 119, 182, 0.2), transparent)',
+          background: 'linear-gradient(to right, transparent, rgba(0, 0, 0, 0.06), transparent)',
         }}
       />
     </section>

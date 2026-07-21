@@ -18,37 +18,38 @@ export default function Contact() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
+      const isMobile = window.innerWidth < 768
+
       // Guarantee clipped state before scrollTrigger evaluates
       gsap.set(sectionRef.current, { clipPath: 'circle(0% at 50% 50%)' })
 
-      // Radial clip-path reveal from center
+      // Radial reveal — toggle-based, not scrub (better perf, no stutter)
       gsap.fromTo(
         sectionRef.current,
         { clipPath: 'circle(0% at 50% 50%)' },
         {
           clipPath: 'circle(75% at 50% 50%)',
-          duration: 1.4,
+          duration: isMobile ? 0.8 : 1.2,
           ease: 'power3.out',
           scrollTrigger: {
             trigger: sectionRef.current,
             start: 'top 85%',
-            end: 'top 30%',
-            scrub: 2,
+            toggleActions: 'play none none reverse',
           },
         }
       )
 
       gsap.fromTo(
         contentRef.current,
-        { opacity: 0, y: 60 },
+        { opacity: 0, y: isMobile ? 30 : 60 },
         {
           opacity: 1,
           y: 0,
-          duration: 1,
+          duration: isMobile ? 0.7 : 1,
           ease: 'power3.out',
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: 'top 60%',
+            start: 'top 65%',
             toggleActions: 'play none none reverse',
           },
         }
@@ -110,7 +111,7 @@ export default function Contact() {
     <section
       id="contact"
       ref={sectionRef}
-      className="relative w-full min-h-screen py-24 md:py-32 overflow-hidden -mt-8 z-[21]"
+      className="relative w-full min-h-screen py-16 md:py-32 overflow-hidden -mt-8 z-[21]"
     >
       <div
         className="absolute inset-0 w-full h-full"
