@@ -77,10 +77,10 @@ const bottomProjects = [
   },
   {
     id: 11,
-    name: 'Design Mockup',
-    category: 'Brand Mockup / Presentation',
+    name: 'Flight Booking UI',
+    category: 'Travel App / Mobile UI/UX',
     year: '2026',
-    image: '/images/projects/design-mockup.jpg',
+    image: '/images/projects/flight-booking-ui.jpg',
   },
   {
     id: 12,
