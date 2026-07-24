@@ -16,41 +16,33 @@ gsap.registerPlugin(ScrollTrigger)
 
 export default function App() {
   const [introComplete, setIntroComplete] = useState(false)
-  const [showContent, setShowContent] = useState(false)
+  const [lenis, setLenis] = useState<Lenis | null>(null)
   const lenisRef = useRef<Lenis | null>(null)
   const rafRef = useRef<number>(0)
 
+  // Init Lenis immediately (not gated behind intro)
   useEffect(() => {
-    if (introComplete) {
-      setShowContent(true)
-    }
-  }, [introComplete])
-
-  useEffect(() => {
-    if (!showContent) return
-
-    const lenis = new Lenis({
+    const instance = new Lenis({
       lerp: 0.08,
       smoothWheel: true,
       touchMultiplier: 1.5,
     })
-    lenisRef.current = lenis
+    lenisRef.current = instance
+    setLenis(instance)
 
-    lenis.on('scroll', ScrollTrigger.update)
+    instance.on('scroll', ScrollTrigger.update)
 
     function raf(time: number) {
-      lenis.raf(time)
+      instance.raf(time)
       rafRef.current = requestAnimationFrame(raf)
     }
     rafRef.current = requestAnimationFrame(raf)
 
-    // Refresh ScrollTrigger after layout settles — images, videos, fonts
     const refreshTimer = setTimeout(() => ScrollTrigger.refresh(), 800)
 
-    // Also refresh on resize so late-loading assets don't break positions
     const handleResize = () => {
       ScrollTrigger.refresh()
-      lenis.resize()
+      instance.resize()
     }
     window.addEventListener('resize', handleResize)
 
@@ -58,9 +50,10 @@ export default function App() {
       clearTimeout(refreshTimer)
       cancelAnimationFrame(rafRef.current)
       window.removeEventListener('resize', handleResize)
-      lenis.destroy()
+      instance.destroy()
+      lenisRef.current = null
     }
-  }, [showContent])
+  }, [])
 
   const scrollTo = (target: string) => {
     lenisRef.current?.scrollTo(target, { duration: 1.5 })
@@ -70,21 +63,23 @@ export default function App() {
     <div className="relative">
       <CustomCursor />
 
-      {!introComplete && <Intro onComplete={() => setIntroComplete(true)} />}
-
-      {showContent && (
-        <>
-          <Navigation scrollTo={scrollTo} />
-          <main className="relative">
-            <Hero scrollTo={scrollTo} />
-            <About />
-            <Projects />
-            <Services />
-            <Contact />
-          </main>
-          <Footer />
-        </>
+      {/* Intro overlay — scroll-scrubbed frame sequence, then exits */}
+      {!introComplete && (
+        <Intro onComplete={() => setIntroComplete(true)} lenis={lenis} />
       )}
+
+      {/* Main content — Hidden behind intro overlay until it exits */}
+      <Navigation scrollTo={scrollTo} />
+
+      <main className="relative">
+        <Hero scrollTo={scrollTo} />
+        <About />
+        <Projects />
+        <Services />
+        <Contact />
+      </main>
+
+      <Footer />
     </div>
   )
 }

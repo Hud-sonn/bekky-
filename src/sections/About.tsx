@@ -203,7 +203,7 @@ export default function About() {
                   className="block text-2xl font-bold text-white"
                   style={{ textShadow: '0 1px 4px rgba(0,0,0,0.8)' }}
                 >
-                  5+
+                  3+
                 </span>
                 <span className="text-sm text-white/90">Years Experience</span>
               </div>
