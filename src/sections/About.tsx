@@ -183,7 +183,7 @@ export default function About() {
               className="text-lg md:text-xl text-white leading-relaxed font-medium"
               style={{ textShadow: '0 1px 6px rgba(0,0,0,0.85)' }}
             >
-              Through <span className="font-semibold text-white">BEVAH Graphics</span>, I design
+              Through <span className="font-semibold text-white">BEVAH Studio</span>, I design
               interfaces and brand systems that combine creativity, clarity, and purpose to help
               brands stand out online.
             </p>
