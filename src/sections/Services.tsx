@@ -162,7 +162,7 @@ export default function Services() {
               className="group relative flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-10 py-5 md:py-8 border-b border-black/10 cursor-default"
             >
               <span
-                className="service-num font-display text-4xl sm:text-5xl md:text-7xl font-bold transition-all duration-400 flex-shrink-0"
+                className="service-num font-display text-4xl sm:text-5xl md:text-7xl font-bold transition-all duration-500 flex-shrink-0"
                 style={{ color: '#444', minWidth: 80 }}
               >
                 {service.number}
@@ -170,20 +170,20 @@ export default function Services() {
 
               <div className="flex-1">
                 <h3
-                  className="service-text font-display text-xl sm:text-2xl md:text-4xl font-bold transition-all duration-400 uppercase tracking-tight"
+                  className="service-text font-display text-xl sm:text-2xl md:text-4xl font-bold transition-all duration-500 uppercase tracking-tight"
                   style={{ color: '#444' }}
                 >
                   {service.title}
                 </h3>
                 <p
-                  className="service-desc mt-2 text-black/50 text-sm md:text-base max-w-2xl transition-all duration-400"
+                  className="service-desc mt-2 text-black/50 text-sm md:text-base max-w-2xl transition-all duration-500"
                   style={{ opacity: 0.5 }}
                 >
                   {service.description}
                 </p>
               </div>
 
-              <div className="hidden md:flex items-center justify-center w-12 h-12 rounded-full border border-black/15 group-hover:border-black/40 group-hover:bg-black/5 transition-all duration-400 flex-shrink-0">
+              <div className="hidden md:flex items-center justify-center w-12 h-12 rounded-full border border-black/15 group-hover:border-black/40 group-hover:bg-black/5 transition-all duration-500 flex-shrink-0">
                 <svg
                   width="20"
                   height="20"

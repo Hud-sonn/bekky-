@@ -74,7 +74,7 @@ export default function App() {
       <main className="relative">
         <Hero scrollTo={scrollTo} />
         <About />
-        <Projects />
+        <Projects lenis={lenis} />
         <Services />
         <Contact />
       </main>

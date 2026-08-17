@@ -1,5 +1,7 @@
-import { useEffect, useRef, useState, memo } from 'react'
+import { useEffect, useRef, useState, memo, useCallback } from 'react'
+import { createPortal } from 'react-dom'
 import gsap from 'gsap'
+import type Lenis from 'lenis'
 
 const topProjects = [
   {
@@ -135,7 +137,7 @@ const ProjectCard = memo(function ProjectCard({
       onMouseLeave={onMouseLeave}
     >
       <div
-        className={`group relative rounded-2xl overflow-hidden cursor-pointer will-change-transform transition-[transform,filter] duration-400 ease-out ${
+        className={`group relative rounded-2xl overflow-hidden cursor-pointer will-change-transform transition-[transform,filter] duration-500 ease-out ${
           isDark ? '' : 'liquid-glass-light shadow-lg'
         } ${isHovered ? 'scale-[1.02]' : isAnyHovered ? 'brightness-[0.55]' : 'scale-100 brightness-100'}`}
       >
@@ -213,11 +215,16 @@ const ProjectCard = memo(function ProjectCard({
   )
 })
 
-export default function Projects() {
+export default function Projects({ lenis }: { lenis: Lenis | null }) {
   const sectionRef = useRef<HTMLElement>(null)
   const titleRef = useRef<HTMLHeadingElement>(null)
   const [hoveredId, setHoveredId] = useState<number | null>(null)
   const [viewing, setViewing] = useState<(typeof topProjects)[0] | null>(null)
+
+  const handleMouseEnter = useCallback((id: number) => setHoveredId(id), [])
+  const handleMouseLeave = useCallback(() => setHoveredId(null), [])
+  const openLightbox = useCallback((project: (typeof topProjects)[0]) => setViewing(project), [])
+  const closeLightbox = useCallback(() => setViewing(null), [])
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -350,9 +357,9 @@ export default function Projects() {
                 project={project}
                 isHovered={hoveredId === project.id}
                 isAnyHovered={hoveredId !== null}
-                onMouseEnter={() => setHoveredId(project.id)}
-                onMouseLeave={() => setHoveredId(null)}
-                onViewProject={setViewing}
+                onMouseEnter={() => handleMouseEnter(project.id)}
+                onMouseLeave={handleMouseLeave}
+                onViewProject={openLightbox}
                 variant="light"
                 index={index}
                 aspectClass="aspect-[4/3]"
@@ -388,9 +395,9 @@ export default function Projects() {
                 project={project}
                 isHovered={hoveredId === project.id}
                 isAnyHovered={hoveredId !== null}
-                onMouseEnter={() => setHoveredId(project.id)}
-                onMouseLeave={() => setHoveredId(null)}
-                onViewProject={setViewing}
+                onMouseEnter={() => handleMouseEnter(project.id)}
+                onMouseLeave={handleMouseLeave}
+                onViewProject={openLightbox}
                 variant="dark"
                 index={index}
                 aspectClass="aspect-[3/4]"
@@ -400,7 +407,7 @@ export default function Projects() {
         </div>
       </div>
 
-      {viewing && <Lightbox project={viewing} onClose={() => setViewing(null)} />}
+      {viewing && <Lightbox project={viewing} onClose={closeLightbox} lenis={lenis} />}
     </section>
   )
 }
@@ -408,9 +415,11 @@ export default function Projects() {
 function Lightbox({
   project,
   onClose,
+  lenis,
 }: {
   project: (typeof topProjects)[0]
   onClose: () => void
+  lenis: Lenis | null
 }) {
   const overlayRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
@@ -420,12 +429,14 @@ function Lightbox({
       if (e.key === 'Escape') onClose()
     }
     window.addEventListener('keydown', onKeyDown)
+    lenis?.stop()
     document.body.style.overflow = 'hidden'
     return () => {
       window.removeEventListener('keydown', onKeyDown)
+      lenis?.start()
       document.body.style.overflow = ''
     }
-  }, [onClose])
+  }, [onClose, lenis])
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -443,7 +454,7 @@ function Lightbox({
     return () => ctx.revert()
   }, [])
 
-  return (
+  return createPortal(
     <div
       ref={overlayRef}
       className="fixed inset-0 z-[200] flex items-center justify-center p-4 md:p-8 bg-black/85 backdrop-blur-sm cursor-zoom-out"
@@ -485,6 +496,7 @@ function Lightbox({
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }
