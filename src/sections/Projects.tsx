@@ -98,10 +98,10 @@ const bottomProjects = [
   },
   {
     id: 14,
-    name: 'Business Card Premium',
-    category: 'Print / Luxury Branding',
+    name: 'Game UI',
+    category: 'Game Interface / Mobile UI',
     year: '2026',
-    image: '/images/projects/business-card-03.jpg',
+    image: '/images/projects/game-ui.jpg',
   },
 ]
 
@@ -111,6 +111,7 @@ const ProjectCard = memo(function ProjectCard({
   isAnyHovered,
   onMouseEnter,
   onMouseLeave,
+  onViewProject,
   variant,
   index,
   aspectClass,
@@ -120,6 +121,7 @@ const ProjectCard = memo(function ProjectCard({
   isAnyHovered: boolean
   onMouseEnter: () => void
   onMouseLeave: () => void
+  onViewProject: (project: (typeof topProjects)[0]) => void
   variant: 'light' | 'dark'
   index: number
   aspectClass: string
@@ -184,7 +186,14 @@ const ProjectCard = memo(function ProjectCard({
                 transform: isHovered ? 'translateY(0)' : 'translateY(10px)',
               }}
             >
-              <span className="inline-flex items-center gap-2 text-sm text-cyan-glow font-medium">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onViewProject(project)
+                }}
+                className="inline-flex items-center gap-2 text-sm text-cyan-glow font-medium cursor-pointer hover:text-white transition-colors"
+              >
                 View Project
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                   <path
@@ -195,7 +204,7 @@ const ProjectCard = memo(function ProjectCard({
                     strokeLinejoin="round"
                   />
                 </svg>
-              </span>
+              </button>
             </div>
           </div>
         </div>
@@ -208,6 +217,7 @@ export default function Projects() {
   const sectionRef = useRef<HTMLElement>(null)
   const titleRef = useRef<HTMLHeadingElement>(null)
   const [hoveredId, setHoveredId] = useState<number | null>(null)
+  const [viewing, setViewing] = useState<(typeof topProjects)[0] | null>(null)
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -342,6 +352,7 @@ export default function Projects() {
                 isAnyHovered={hoveredId !== null}
                 onMouseEnter={() => setHoveredId(project.id)}
                 onMouseLeave={() => setHoveredId(null)}
+                onViewProject={setViewing}
                 variant="light"
                 index={index}
                 aspectClass="aspect-[4/3]"
@@ -379,6 +390,7 @@ export default function Projects() {
                 isAnyHovered={hoveredId !== null}
                 onMouseEnter={() => setHoveredId(project.id)}
                 onMouseLeave={() => setHoveredId(null)}
+                onViewProject={setViewing}
                 variant="dark"
                 index={index}
                 aspectClass="aspect-[3/4]"
@@ -387,6 +399,92 @@ export default function Projects() {
           </div>
         </div>
       </div>
+
+      {viewing && <Lightbox project={viewing} onClose={() => setViewing(null)} />}
     </section>
+  )
+}
+
+function Lightbox({
+  project,
+  onClose,
+}: {
+  project: (typeof topProjects)[0]
+  onClose: () => void
+}) {
+  const overlayRef = useRef<HTMLDivElement>(null)
+  const contentRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose()
+    }
+    window.addEventListener('keydown', onKeyDown)
+    document.body.style.overflow = 'hidden'
+    return () => {
+      window.removeEventListener('keydown', onKeyDown)
+      document.body.style.overflow = ''
+    }
+  }, [onClose])
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        overlayRef.current,
+        { opacity: 0 },
+        { opacity: 1, duration: 0.25, ease: 'power2.out' }
+      )
+      gsap.fromTo(
+        contentRef.current,
+        { scale: 0.9, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.35, ease: 'power3.out' }
+      )
+    })
+    return () => ctx.revert()
+  }, [])
+
+  return (
+    <div
+      ref={overlayRef}
+      className="fixed inset-0 z-[200] flex items-center justify-center p-4 md:p-8 bg-black/85 backdrop-blur-sm cursor-zoom-out"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+    >
+      <div ref={contentRef} className="relative max-w-5xl w-full">
+        <img
+          src={project.image}
+          alt={project.name}
+          className="w-full max-h-[85vh] object-contain rounded-xl shadow-2xl"
+        />
+        <div className="mt-4 flex items-center justify-between px-1">
+          <div>
+            <h3 className="font-display text-lg md:text-xl font-bold text-white">{project.name}</h3>
+            <p className="text-sm text-white/60 mt-0.5">
+              {project.category} · {project.year}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation()
+              onClose()
+            }}
+            className="inline-flex items-center gap-2 text-sm text-white/70 hover:text-white transition-colors cursor-pointer"
+          >
+            Close
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path
+                d="M4 4L12 12M12 4L4 12"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
   )
 }
