@@ -123,7 +123,7 @@ const ProjectCard = memo(function ProjectCard({
   isAnyHovered: boolean
   onMouseEnter: () => void
   onMouseLeave: () => void
-  onViewProject: (project: (typeof topProjects)[0]) => void
+  onViewProject: (project: (typeof topProjects)[0], origin: { x: number; y: number }) => void
   variant: 'light' | 'dark'
   index: number
   aspectClass: string
@@ -132,6 +132,7 @@ const ProjectCard = memo(function ProjectCard({
 
   return (
     <div
+      data-project-card
       className={`project-card ${index % 2 === 0 ? 'project-card-left' : 'project-card-right'}`}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
@@ -192,7 +193,12 @@ const ProjectCard = memo(function ProjectCard({
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation()
-                  onViewProject(project)
+                  const card = (e.currentTarget as HTMLElement).closest('[data-project-card]')
+                  const rect = card?.getBoundingClientRect()
+                  onViewProject(project, {
+                    x: rect ? rect.left + rect.width / 2 : window.innerWidth / 2,
+                    y: rect ? rect.top + rect.height / 2 : window.innerHeight / 2,
+                  })
                 }}
                 className="inline-flex items-center gap-2 text-sm text-cyan-glow font-medium cursor-pointer hover:text-white transition-colors"
               >
@@ -220,10 +226,17 @@ export default function Projects({ lenis }: { lenis: Lenis | null }) {
   const titleRef = useRef<HTMLHeadingElement>(null)
   const [hoveredId, setHoveredId] = useState<number | null>(null)
   const [viewing, setViewing] = useState<(typeof topProjects)[0] | null>(null)
+  const originRef = useRef({ x: window.innerWidth / 2, y: window.innerHeight / 2 })
 
   const handleMouseEnter = useCallback((id: number) => setHoveredId(id), [])
   const handleMouseLeave = useCallback(() => setHoveredId(null), [])
-  const openLightbox = useCallback((project: (typeof topProjects)[0]) => setViewing(project), [])
+  const openLightbox = useCallback(
+    (project: (typeof topProjects)[0], origin: { x: number; y: number }) => {
+      originRef.current = origin
+      setViewing(project)
+    },
+    []
+  )
   const closeLightbox = useCallback(() => setViewing(null), [])
 
   useEffect(() => {
@@ -407,7 +420,14 @@ export default function Projects({ lenis }: { lenis: Lenis | null }) {
         </div>
       </div>
 
-      {viewing && <Lightbox project={viewing} onClose={closeLightbox} lenis={lenis} />}
+      {viewing && (
+        <Lightbox
+          project={viewing}
+          onClose={closeLightbox}
+          lenis={lenis}
+          origin={originRef.current}
+        />
+      )}
     </section>
   )
 }
@@ -416,10 +436,12 @@ function Lightbox({
   project,
   onClose,
   lenis,
+  origin,
 }: {
   project: (typeof topProjects)[0]
   onClose: () => void
   lenis: Lenis | null
+  origin: { x: number; y: number }
 }) {
   const overlayRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
@@ -443,16 +465,31 @@ function Lightbox({
       gsap.fromTo(
         overlayRef.current,
         { opacity: 0 },
-        { opacity: 1, duration: 0.25, ease: 'power2.out' }
+        { opacity: 1, duration: 0.3, ease: 'power2.out' }
       )
+      // Expand from the clicked card's position to the center of the screen
+      const centerX = window.innerWidth / 2
+      const centerY = window.innerHeight / 2
       gsap.fromTo(
         contentRef.current,
-        { scale: 0.9, opacity: 0 },
-        { scale: 1, opacity: 1, duration: 0.35, ease: 'power3.out' }
+        {
+          x: origin.x - centerX,
+          y: origin.y - centerY,
+          scale: 0.3,
+          opacity: 0,
+        },
+        {
+          x: 0,
+          y: 0,
+          scale: 1,
+          opacity: 1,
+          duration: 0.45,
+          ease: 'power3.out',
+        }
       )
     })
     return () => ctx.revert()
-  }, [])
+  }, [origin])
 
   return createPortal(
     <div

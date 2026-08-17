@@ -92,7 +92,10 @@ export default function Intro({ onComplete, lenis }: IntroProps) {
         img.onload = () => {
           if (cancelled) return
           loadedCount++
-          setLoadProgress(Math.round((loadedCount / total) * 100))
+          // Throttle progress updates — one re-render per 5 frames instead of 147
+          if (loadedCount % 5 === 0 || loadedCount === total) {
+            setLoadProgress(Math.round((loadedCount / total) * 100))
+          }
 
           // Draw first loaded frame to canvas immediately
           if (loadedCount === 1) {
@@ -107,7 +110,9 @@ export default function Intro({ onComplete, lenis }: IntroProps) {
         img.onerror = () => {
           if (cancelled) return
           loadedCount++
-          setLoadProgress(Math.round((loadedCount / total) * 100))
+          if (loadedCount % 5 === 0 || loadedCount === total) {
+            setLoadProgress(Math.round((loadedCount / total) * 100))
+          }
           if (loadedCount === total) setAllLoaded(true)
         }
       }
@@ -158,6 +163,9 @@ export default function Intro({ onComplete, lenis }: IntroProps) {
   // ── Scroll-scrub via Lenis ──
   useEffect(() => {
     if (!allLoaded || !lenis) return
+
+    // Reset scroll to start — user may have scrolled during loading
+    lenis.scrollTo(0, { immediate: true, lock: true })
 
     const totalFrames = imagesRef.current.length
     const pxPerFrame = 4
